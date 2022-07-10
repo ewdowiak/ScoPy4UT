@@ -1,0 +1,123 @@
+Description: enlarged cards, shortened text
+ Porting to Ubuntu Touch (for use with Libertine), so the cards need to be
+ enlarged and the length of text in dialogs needs to be shorter.
+Author: Eryk Wdowiak <eryk@wdowiak.me>
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: https://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: <YYYY-MM-DD>
+
+--- scopy-0.4.2.orig/setup.py
++++ scopy-0.4.2/setup.py
+@@ -73,7 +73,7 @@ list_files('.')
+ src.append(['share/applications',['data/scopy.desktop']])
+ 
+ setup(name='ScoPy',
+-	version='0.2',
++	version='0.4.2',
+ 	description="The italian card game 'scopa'",
+ 	author='Marco Scarpetta',
+ 	author_email='marcoscarpetta02@gmail.com',
+--- scopy-0.4.2.orig/src/Actions/LastMove.py
++++ scopy-0.4.2/src/Actions/LastMove.py
+@@ -47,7 +47,7 @@ def nascondi_ultima_presa(actor, event,
+ def main(widget,app):
+ 	if app.ultima_presa[0] != 0:
+ 		widget.set_label(_('Hide last move'))
+-		app.dichiarazione[1].set_text(_('Computer played ... and took ...'))
++		app.dichiarazione[1].set_text(_('AI played ... and took ...'))
+ 		i=app.stage.get_n_children()
+ 		n=0
+ 		while n<i:
+@@ -71,4 +71,4 @@ def main(widget,app):
+ 			oggetti.append(actor)
+ 			i=i+1
+ 		widget.disconnect_by_func(main)
+-		widget.connect('activate', nascondi_ultima_presa,None,app,widget,oggetti)
+\ No newline at end of file
++		widget.connect('activate', nascondi_ultima_presa,None,app,widget,oggetti)
+--- scopy-0.4.2.orig/src/briscola.py
++++ scopy-0.4.2/src/briscola.py
+@@ -69,7 +69,7 @@ class giocatore():
+ 
+ class partita():
+ 	def __init__(self, nome):
+-		self.giocatore = [giocatore(nome), giocatore("Computer")]
++		self.giocatore = [giocatore(nome), giocatore("AI")]
+ 		self.mazzo = mazzo(40)
+ 		self.carte_terra = mazzo()
+ 		self.mano1 = 0
+--- scopy-0.4.2.orig/src/scopy-gtk2.py
++++ scopy-0.4.2/src/scopy-gtk2.py
+@@ -330,7 +330,7 @@ class main_win(object):
+ 		self.turni.set_markup(
+ 			'<span foreground="white">Turni restanti: '
+ 			+str(len(self.partita.mazzo.carte)/6)
+-			+' \n\nComputer  '+str(self.partita.giocatore[1].punti)
++			+' \n\nAI  '+str(self.partita.giocatore[1].punti)
+ 			+'\n'+self.partita.giocatore[0].nome+'  '
+ 			+str(self.partita.giocatore[0].punti)
+ 			+'</span>'
+@@ -422,7 +422,7 @@ class main_win(object):
+ 			self.gioca_computer()
+ 	def riepiloga(self):
+ 		punti = self.partita.conta_punti()
+-		colonne = ['\n',self.partita.giocatore[0].nome+'\n','Computer'+'\n']
++		colonne = ['\n',self.partita.giocatore[0].nome+'\n','AI'+'\n']
+ 		for voce in punti:
+ 			if voce != 'Parziale':
+ 				colonne[0] = colonne[0] + voce + '\n'
+--- scopy-0.4.2.orig/src/scopy.py
++++ scopy-0.4.2/src/scopy.py
+@@ -37,8 +37,8 @@ class main_win():
+ 			'nome':_('Player'),
+ 			'variante':_('Classic scopa'),
+ 			'speed':'3',
+-			'carte':'Napoletane',
+-			'sfondo':'verde',
++			'carte':'Siciliane',
++			'sfondo':'Panno',
+ 			}
+ 		self.load_opzioni()
+ 		#impostazioni finestra principale
+@@ -165,7 +165,7 @@ class main_win():
+ 		self.carte = Carte()
+ 		if colonne == None:
+ 			punti = self.partita.conta_punti()
+-			colonne = ['\n',self.partita.giocatore[0].nome+'\n','Computer'+'\n']
++			colonne = ['\n',self.partita.giocatore[0].nome+'\n','AI'+'\n']
+ 			for voce in punti:
+ 				if voce != 'Parziale':
+ 					colonne[0] = colonne[0] + voce + '\n'
+@@ -246,7 +246,7 @@ class main_win():
+ 	#crea una nuova partita in base ai dati in self.opzioni
+ 	def crea_partita(self, nc=None):
+ 		if nc==None:
+-			nc=_('Computer')
++			nc=_('AI')
+ 		if self.opzioni['variante'] == None:
+ 			import classica
+ 			self.partita = classica.partita(self.opzioni['nome'],nc)
+@@ -407,11 +407,10 @@ class main_win():
+ 		self.boxes['scope_g'].set_n_scope(self.partita.giocatore[0].scope)
+ 		c_id = self.status_bar.get_context_id('situazione')
+ 		self.status_bar.push(c_id,
+-			_('Remaining rounds:')
++			_('Rounds:')
+ 			+' '+str(len(self.partita.mazzo.carte)/6)
++			+'  '+self.partita.giocatore[0].nome+': '+str(self.partita.giocatore[0].punti)
+ 			+'  '+self.partita.giocatore[1].nome+': '+str(self.partita.giocatore[1].punti)
+-			+'  '+self.partita.giocatore[0].nome+': '
+-			+str(self.partita.giocatore[0].punti)
+ 			)
+ 		time =100
+ 		#a terra

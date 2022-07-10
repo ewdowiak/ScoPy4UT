@@ -1,0 +1,134 @@
+Description: stacked cards vertically
+ Rearranged the card locations into a vertical format, so that the game
+ fits properly onto a phone.
+ .
+ scopy (0.4.2-4~emw4ut) UNRELEASED; urgency=low
+ .
+   * porting to Ubuntu Touch (for use with Libertine).
+   * rearranged card locations (vertically for a phone)
+   * enlarged cards, reduced length of text in dialogs
+Author: Eryk Wdowiak <eryk@wdowiak.me>
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: https://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: <YYYY-MM-DD>
+
+--- scopy-0.4.2.orig/src/scopy.py
++++ scopy-0.4.2/src/scopy.py
+@@ -45,7 +45,7 @@ class main_win():
+ 		self.window = Gtk.Window()
+ 		self.window.connect('delete-event', Gtk.main_quit)
+ 		self.window.connect('configure-event', self.window_resized)
+-		self.window.set_position(Gtk.WindowPosition.CENTER)
++		self.window.set_position(Gtk.WindowPosition.CENTER_ON_PARENT) ## CENTER)
+ 		table = Gtk.Table(3, 3, False)
+ 		self.embed = GtkClutter.Embed.new()
+ 		self.stage = self.embed.get_stage()
+@@ -90,22 +90,52 @@ class main_win():
+ 		self.boxes['prese_g'].set_retro(percorso_carte+self.opzioni['carte']+'/'+immagini[1][0])
+ 		self.boxes['scope_c'].set_scopa(percorso_carte+self.opzioni['carte']+'/'+immagini[self.partita.giocatore[1].ult_scopa[0]][self.partita.giocatore[1].ult_scopa[1]])
+ 		self.boxes['scope_g'].set_scopa(percorso_carte+self.opzioni['carte']+'/'+immagini[self.partita.giocatore[0].ult_scopa[0]][self.partita.giocatore[0].ult_scopa[1]])
+-		width=self.boxes['terra'].get_width()+self.boxes['prese_c'].get_width()+self.boxes['scope_c'].get_width()
++
++		## width=self.boxes['terra'].get_width()+self.boxes['prese_c'].get_width()+self.boxes['scope_c'].get_width()
++                width=self.boxes['terra'].get_width()
+ 		height=self.boxes['computer'].get_height()+self.boxes['terra'].get_height()+self.boxes['giocatore'].get_height()
++
+ 		self.embed.set_size_request(width, height)
+ 	#controlla che lo sfondo copra tutta la finestra
+ 	def window_resized(self,widget=None,event=None):
+ 		self.width, self.height = self.stage.get_size()
+-		self.back_img.set_size(self.width, self.height)
+-		self.boxes['computer'].set_x(0)
+-		self.boxes['terra'].set_y(self.boxes['computer'].get_height()+int(self.height-(self.boxes['computer'].get_height()+self.boxes['terra'].get_height()+self.boxes['giocatore'].get_height()))/2)
+-		self.boxes['giocatore'].set_y(self.height-self.boxes['giocatore'].get_height())
+-		self.boxes['scope_g'].set_x(self.width-self.boxes['scope_g'].get_width())
+-		self.boxes['scope_g'].set_y(self.height-self.boxes['giocatore'].get_height())
+-		self.boxes['scope_c'].set_x(self.width-self.boxes['scope_c'].get_width())
+-		self.boxes['prese_g'].set_x(self.width-self.boxes['prese_g'].get_width()-self.boxes['scope_g'].get_width())
+-		self.boxes['prese_g'].set_y(self.height-self.boxes['giocatore'].get_height())
+-		self.boxes['prese_c'].set_x(self.width-self.boxes['prese_c'].get_width()-self.boxes['scope_c'].get_width())
++		## self.back_img.set_size(self.width, self.height)
++                self.back_img.set_size(1080, 2000)
++                
++                ##  original code
++                # self.boxes['computer'].set_x(0)
++		# self.boxes['terra'].set_y(self.boxes['computer'].get_height()+int(self.height-(self.boxes['computer'].get_height()+self.boxes['terra'].get_height()+self.boxes['giocatore'].get_height()))/2)
++		# self.boxes['giocatore'].set_y(self.height-self.boxes['giocatore'].get_height())
++		# self.boxes['scope_g'].set_x(self.width-self.boxes['scope_g'].get_width())
++		# self.boxes['scope_g'].set_y(self.height-self.boxes['giocatore'].get_height())
++		# self.boxes['scope_c'].set_x(self.width-self.boxes['scope_c'].get_width())
++		# self.boxes['prese_g'].set_x(self.width-self.boxes['prese_g'].get_width()-self.boxes['scope_g'].get_width())
++		# self.boxes['prese_g'].set_y(self.height-self.boxes['giocatore'].get_height())
++		# self.boxes['prese_c'].set_x(self.width-self.boxes['prese_c'].get_width()-self.boxes['scope_c'].get_width())
++
++
++                ##  adaptation
++
++                ##  set left offset
++                loff = 20
++                
++                self.boxes['computer'].set_x(loff)
++                self.boxes['computer'].set_y(self.boxes['scope_c'].get_height())
++                self.boxes['terra'].set_x(loff)
++                self.boxes['terra'].set_y(self.boxes['scope_c'].get_height()+self.boxes['computer'].get_height())
++		self.boxes['giocatore'].set_x(loff)
++                self.boxes['giocatore'].set_y(self.boxes['scope_c'].get_height()+self.boxes['computer'].get_height()+self.boxes['terra'].get_height())
++                
++		self.boxes['scope_g'].set_x(loff+self.boxes['prese_g'].get_width())
++		self.boxes['scope_g'].set_y(self.boxes['scope_c'].get_height()+self.boxes['computer'].get_height()+self.boxes['terra'].get_height()+self.boxes['giocatore'].get_height())
++
++                self.boxes['scope_c'].set_x(loff+self.boxes['prese_c'].get_width())
++                
++		self.boxes['prese_g'].set_x(loff) ## self.boxes['giocatore'].get_width())
++		self.boxes['prese_g'].set_y(self.boxes['scope_c'].get_height()+self.boxes['computer'].get_height()+self.boxes['terra'].get_height()+self.boxes['giocatore'].get_height())
++		self.boxes['prese_c'].set_x(loff) ## self.boxes['computer'].get_width())
++                
++
+ 	#calcola le posizioni dove andranno spostate le carte
+ 	def calc_posizioni(self):
+ 		actor = Clutter.Texture.new_from_file(percorso_carte+self.opzioni['carte']+'/'+immagini[1][0])
+@@ -115,13 +145,23 @@ class main_win():
+ 		p = 10
+ 		s = 20
+ 		self.boxes = {}
++
+ 		self.boxes['computer']=Box(self.stage,1,3,0,0,s,p,w,h)
+ 		self.boxes['terra']=Box(self.stage,2,5,0,self.boxes['computer'].get_height(),s,p,w,h)
+ 		self.boxes['giocatore']=Box(self.stage,1,3,0,self.boxes['computer'].get_height()+self.boxes['terra'].get_height(),s,p,w,h)
+-		self.boxes['prese_c']=Mazzo(self.stage, percorso_carte+self.opzioni['carte']+'/'+immagini[1][0], self.boxes['terra'].get_width(),0,p)
+-		self.boxes['prese_g']=Mazzo(self.stage, percorso_carte+self.opzioni['carte']+'/'+immagini[1][0], self.boxes['terra'].get_width(),self.boxes['giocatore'].get_y(),p)
++
++                ##  original code
++		## self.boxes['prese_c']=Mazzo(self.stage, percorso_carte+self.opzioni['carte']+'/'+immagini[1][0], self.boxes['terra'].get_width(),0,p)
++		## self.boxes['prese_g']=Mazzo(self.stage, percorso_carte+self.opzioni['carte']+'/'+immagini[1][0], self.boxes['terra'].get_width(),self.boxes['giocatore'].get_y(),p)
++
++                ##  adaptation
++                self.boxes['prese_c']=Mazzo(self.stage, percorso_carte+self.opzioni['carte']+'/'+immagini[1][0], 0, 0,p)
++		self.boxes['prese_g']=Mazzo(self.stage, percorso_carte+self.opzioni['carte']+'/'+immagini[1][0], 0, self.boxes['giocatore'].get_y(),p)
++                
+ 		self.boxes['scope_c']=Scope(self.stage, self.boxes['prese_c'].get_x()+self.boxes['prese_c'].get_width(),0,p,w,h)
+ 		self.boxes['scope_g']=Scope(self.stage, self.boxes['prese_c'].get_x()+self.boxes['prese_c'].get_width(),self.boxes['giocatore'].get_y(),p,w,h)
++                
++
+ 		self.pos_sce = []
+ 		n=0
+ 		while n<4:
+@@ -246,7 +286,7 @@ class main_win():
+ 	#crea una nuova partita in base ai dati in self.opzioni
+ 	def crea_partita(self, nc=None):
+ 		if nc==None:
+-			nc=_('Comp.')
++			nc=_('Computer')
+ 		if self.opzioni['variante'] == None:
+ 			import classica
+ 			self.partita = classica.partita(self.opzioni['nome'],nc)

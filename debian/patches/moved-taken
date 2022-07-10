@@ -1,0 +1,60 @@
+Description: moved taken cards
+ Rearranged card locations.  Taken cards moved to opposite corners.
+ .
+ scopy (0.4.2-5~emw4ut) UNRELEASED; urgency=low
+ .
+   * porting to Ubuntu Touch (for use with Libertine)
+   * rearranged card locations (vertically for a phone)
+   * enlarged cards, reduced length of text in dialogs
+Author: Eryk Wdowiak <eryk@wdowiak.me>
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: https://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: <YYYY-MM-DD>
+
+--- scopy-0.4.2.orig/src/scopy.py
++++ scopy-0.4.2/src/scopy.py
+@@ -116,25 +116,26 @@ class main_win():
+ 
+                 ##  adaptation
+ 
+-                ##  set left offset
++                ##  set left offsets
+                 loff = 20
++                coff = 208
++                goff = 600
+                 
+-                self.boxes['computer'].set_x(loff)
++                self.boxes['computer'].set_x(coff)
+                 self.boxes['computer'].set_y(self.boxes['scope_c'].get_height())
+                 self.boxes['terra'].set_x(loff)
+                 self.boxes['terra'].set_y(self.boxes['scope_c'].get_height()+self.boxes['computer'].get_height())
+-		self.boxes['giocatore'].set_x(loff)
++		self.boxes['giocatore'].set_x(coff)
+                 self.boxes['giocatore'].set_y(self.boxes['scope_c'].get_height()+self.boxes['computer'].get_height()+self.boxes['terra'].get_height())
+                 
+-		self.boxes['scope_g'].set_x(loff+self.boxes['prese_g'].get_width())
++		self.boxes['scope_g'].set_x(goff+self.boxes['prese_g'].get_width())
+ 		self.boxes['scope_g'].set_y(self.boxes['scope_c'].get_height()+self.boxes['computer'].get_height()+self.boxes['terra'].get_height()+self.boxes['giocatore'].get_height())
+ 
+-                self.boxes['scope_c'].set_x(loff+self.boxes['prese_c'].get_width())
++                self.boxes['scope_c'].set_x(loff)
+                 
+-		self.boxes['prese_g'].set_x(loff) ## self.boxes['giocatore'].get_width())
++		self.boxes['prese_g'].set_x(goff) ## self.boxes['giocatore'].get_width())
+ 		self.boxes['prese_g'].set_y(self.boxes['scope_c'].get_height()+self.boxes['computer'].get_height()+self.boxes['terra'].get_height()+self.boxes['giocatore'].get_height())
+-		self.boxes['prese_c'].set_x(loff) ## self.boxes['computer'].get_width())
+-                
++                self.boxes['prese_c'].set_x(loff+self.boxes['scope_c'].get_width())
+ 
+ 	#calcola le posizioni dove andranno spostate le carte
+ 	def calc_posizioni(self):

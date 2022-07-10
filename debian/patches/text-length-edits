@@ -1,0 +1,79 @@
+Description: shortened text
+ Shortened length of text of dialog boxes
+Author: Eryk Wdowiak <eryk@wdowiak.me>
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: https://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: <YYYY-MM-DD>
+
+--- scopy-0.4.2.orig/src/Actions/LastMove.py
++++ scopy-0.4.2/src/Actions/LastMove.py
+@@ -47,7 +47,7 @@ def nascondi_ultima_presa(actor, event,
+ def main(widget,app):
+ 	if app.ultima_presa[0] != 0:
+ 		widget.set_label(_('Hide last move'))
+-		app.dichiarazione[1].set_text(_('AI played ... and took ...'))
++		app.dichiarazione[1].set_text(_('Computer played ... and took ...'))
+ 		i=app.stage.get_n_children()
+ 		n=0
+ 		while n<i:
+--- scopy-0.4.2.orig/src/briscola.py
++++ scopy-0.4.2/src/briscola.py
+@@ -69,7 +69,7 @@ class giocatore():
+ 
+ class partita():
+ 	def __init__(self, nome):
+-		self.giocatore = [giocatore(nome), giocatore("AI")]
++		self.giocatore = [giocatore(nome), giocatore("Comp.")]
+ 		self.mazzo = mazzo(40)
+ 		self.carte_terra = mazzo()
+ 		self.mano1 = 0
+--- scopy-0.4.2.orig/src/scopy-gtk2.py
++++ scopy-0.4.2/src/scopy-gtk2.py
+@@ -330,7 +330,7 @@ class main_win(object):
+ 		self.turni.set_markup(
+ 			'<span foreground="white">Turni restanti: '
+ 			+str(len(self.partita.mazzo.carte)/6)
+-			+' \n\nAI  '+str(self.partita.giocatore[1].punti)
++			+' \n\nComp.  '+str(self.partita.giocatore[1].punti)
+ 			+'\n'+self.partita.giocatore[0].nome+'  '
+ 			+str(self.partita.giocatore[0].punti)
+ 			+'</span>'
+@@ -422,7 +422,7 @@ class main_win(object):
+ 			self.gioca_computer()
+ 	def riepiloga(self):
+ 		punti = self.partita.conta_punti()
+-		colonne = ['\n',self.partita.giocatore[0].nome+'\n','AI'+'\n']
++		colonne = ['\n',self.partita.giocatore[0].nome+'\n','Comp.'+'\n']
+ 		for voce in punti:
+ 			if voce != 'Parziale':
+ 				colonne[0] = colonne[0] + voce + '\n'
+--- scopy-0.4.2.orig/src/scopy.py
++++ scopy-0.4.2/src/scopy.py
+@@ -165,7 +165,7 @@ class main_win():
+ 		self.carte = Carte()
+ 		if colonne == None:
+ 			punti = self.partita.conta_punti()
+-			colonne = ['\n',self.partita.giocatore[0].nome+'\n','AI'+'\n']
++			colonne = ['\n',self.partita.giocatore[0].nome+'\n','Comp.'+'\n']
+ 			for voce in punti:
+ 				if voce != 'Parziale':
+ 					colonne[0] = colonne[0] + voce + '\n'
+@@ -246,7 +246,7 @@ class main_win():
+ 	#crea una nuova partita in base ai dati in self.opzioni
+ 	def crea_partita(self, nc=None):
+ 		if nc==None:
+-			nc=_('AI')
++			nc=_('Comp.')
+ 		if self.opzioni['variante'] == None:
+ 			import classica
+ 			self.partita = classica.partita(self.opzioni['nome'],nc)
